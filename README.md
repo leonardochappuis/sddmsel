@@ -5,9 +5,15 @@ A SEL inspired theme for the <a href="https://github.com/sddm/sddm">SDDM Login M
 </p>
 
 <h2 align=center>Preview</h2>
-<center>
-<img src="./Previews/1.png" alt="preview-1">
 
+
+https://github.com/leonardochappuis/sddmsel/assets/40621126/7475334d-c237-44fa-8fce-ea7ac93da41d
+
+
+<center>
+
+<img src="./Previews/1.png" alt="preview-1">
+   
 </center>
 
 ## Install
