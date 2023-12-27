@@ -1,0 +1,13 @@
+[SddmGreeterTheme]
+Name=SDDM SEL
+Description=A SEL inspired SDDM theme
+Author=beuz
+License=GPL-3.0-or-later
+Type=sddm-theme
+Version=1.0
+Website=https://github.com/leonardochappuis/sddmsel
+Screenshot=preview.png
+MainScript=Main.qml
+ConfigFile=theme.conf
+Theme-Id=sddm-sel
+
