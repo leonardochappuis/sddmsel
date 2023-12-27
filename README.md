@@ -55,7 +55,6 @@ Current=sddm-sel
 - Based on the theme [`Tokyo Night SDDM`](https://github.com/rototrash/tokyo-night-sddm.git) which in turn
 is:
 - Based on the theme [`Sugar Dark for SDDM`](https://github.com/MarianArlt/sddm-sugar-dark) by [**MarianArlt**](https://github.com/MarianArlt).
-- AUR Package by [**julian-poidevin**](https://github.com/julian-poidevin)
 
 ## License
 
