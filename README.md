@@ -23,7 +23,7 @@ https://github.com/leonardochappuis/sddmsel/assets/40621126/6ec86e78-692d-4a24-b
 > _Assumes that you've installed and configured SDDM correctly_ (if not [read more](https://wiki.archlinux.org/title/SDDM))
 
 >  Please make sure you have the following dependencies installed:
->  `qt5-quickcontrols2`, `qt5-graphicaleffects`, `qt5-svg`, `qt5-multimedia` 
+>  `qt5-quickcontrols2`, `qt5-graphicaleffects`, `qt5-svg`, `qt5-multimedia`, `gst-libav`, `gst-plugins-good`, `gst-plugin-openh264`
 
 1. Open terminal, and clone the repository with:
 
