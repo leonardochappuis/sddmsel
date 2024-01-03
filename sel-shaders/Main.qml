@@ -239,6 +239,56 @@ Pane {
             fillMode: VideoOutput.PreserveAspectCrop
         }
 
+        ShaderEffect {
+            id: crtEffect
+            anchors.fill: parent
+            property variant source: ShaderEffectSource { sourceItem: video; hideSource: true }
+
+            property real iTime: 0.0
+
+            NumberAnimation on iTime {
+                from: 0.0; to: 60.0; loops: Animation.Infinite; duration: 60000
+            }
+
+            // default vertex shader code
+            vertexShader: "
+                uniform highp mat4 qt_Matrix;
+                attribute highp vec4 qt_Vertex;
+                attribute highp vec2 qt_MultiTexCoord0;
+                varying highp vec2 qt_TexCoord0;
+                void main() {
+                    qt_TexCoord0 = qt_MultiTexCoord0;
+                    gl_Position = qt_Matrix * qt_Vertex;
+                }"
+
+            fragmentShader: "
+                varying highp vec2 qt_TexCoord0;
+                uniform sampler2D source;
+                uniform lowp float iTime;
+                uniform lowp float qt_Opacity;
+                
+                float scanline(vec2 uv) {
+                    return sin(1920.0 * float(uv.y) * 0.7 - float(iTime) * 10.0);
+                }
+
+                float slowscan(vec2 uv) {
+                  return sin(1920.0 * float(uv.y) * 0.02 + float(iTime) * 6.0);
+                }
+
+                void main() {
+                    vec2 uv = qt_TexCoord0.xy;
+                    vec4 color;
+
+                    color.rgb = texture2D(source, uv).rgb;
+
+                    vec4 scanline_color = vec4(scanline(uv));
+	                  vec4 slowscan_color = vec4(slowscan(uv));
+
+                    gl_FragColor = mix(color, mix(scanline_color, slowscan_color, 0.25), 0.05);
+                }"
+        }
+
+        
         MouseArea {
             anchors.fill: video
             onClicked: parent.forceActiveFocus()
