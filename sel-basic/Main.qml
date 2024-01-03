@@ -268,11 +268,11 @@ Pane {
                 uniform lowp float qt_Opacity;
                 
                 float scanline(vec2 uv) {
-                    return sin(1920.0 * uv.y * 0.7 - iTime * 10.0);
+                    return sin(1920.0 * float(uv.y) * 0.7 - float(iTime) * 10.0);
                 }
 
                 float slowscan(vec2 uv) {
-                  return sin(1920.0 * uv.y * 0.02 + iTime * 6.0);
+                  return sin(1920.0 * float(uv.y) * 0.02 + float(iTime) * 6.0);
                 }
 
                 void main() {
