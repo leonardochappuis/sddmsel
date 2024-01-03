@@ -26,7 +26,7 @@ import QtQuick 2.11
 import QtQuick.Layouts 1.11
 import QtQuick.Controls 2.4
 import QtGraphicalEffects 1.0
-import QtMultimedia 5.13
+import QtMultimedia 5.11
 
 import "Components"
 
@@ -261,7 +261,6 @@ Pane {
                     gl_Position = qt_Matrix * qt_Vertex;
                 }"
 
-            // default fragment shader code
             fragmentShader: "
                 varying highp vec2 qt_TexCoord0;
                 uniform sampler2D source;
@@ -269,11 +268,11 @@ Pane {
                 uniform lowp float qt_Opacity;
                 
                 float scanline(vec2 uv) {
-                    return sin(1920 * uv.y * 0.7 - iTime * 10.0);
+                    return sin(1920.0 * uv.y * 0.7 - iTime * 10.0);
                 }
 
                 float slowscan(vec2 uv) {
-                  return sin(1920 * uv.y * 0.02 + iTime * 6.0);
+                  return sin(1920.0 * uv.y * 0.02 + iTime * 6.0);
                 }
 
                 void main() {
@@ -291,7 +290,7 @@ Pane {
 
         
         MouseArea {
-            anchors.fill: backgroundImage
+            anchors.fill: video
             onClicked: parent.forceActiveFocus()
         }
         
