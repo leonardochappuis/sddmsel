@@ -12,11 +12,6 @@ https://github.com/leonardochappuis/sddmsel/assets/40621126/6ec86e78-692d-4a24-b
 
 
 
-<center>
-
-<img src="./Previews/1.png" alt="preview-1">
-   
-</center>
 
 ## Install
 ### From sources
@@ -68,6 +63,31 @@ sudo nano /etc/sddm.conf  # use any text editor with raised privileges
 [Theme]
 Current=sddm-sel
    ```
+
+# FAQ
+
+1. Sometimes SDDM might but with no audio on the login screen if pipewire is initialized after SSDM
+
+Here's a possible solution.
+Change the `sddm.service` file:
+
+```bash
+sudo systemctl edit sddm.service
+```
+
+In the editor that opens, paste the following lines:
+```
+[Unit]
+After=pipewire.service pipewire.socket
+Wants=pipewire.service pipewire.socket
+```
+Save and close the file.
+
+Then run this command to apply the changes:
+```bash
+sudo systemctl daemon-reexec
+```
+(credits to [`Epixardo`](https://github.com/Epixardo) for reporting this one)
 
 ## Credits
 
