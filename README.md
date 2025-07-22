@@ -66,7 +66,7 @@ Current=sddm-sel
 
 # FAQ
 
-1. Sometimes SDDM might but with no audio on the login screen if pipewire is initialized after SSDM
+1. Sometimes SDDM might play no audio on the login screen if pipewire is initialized after it
 
 Here's a possible solution.
 Change the `sddm.service` file:
