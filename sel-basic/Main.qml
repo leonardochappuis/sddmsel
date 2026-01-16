@@ -243,6 +243,12 @@ Pane {
             anchors.fill: video
             onClicked: parent.forceActiveFocus()
         }
+        Audio {
+            id: welcome
+            source: "Assets/Copland_OS.mp3"
+            autoPlay: true
+    
+        }
         
     }
 }
