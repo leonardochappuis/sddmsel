@@ -22,11 +22,10 @@
 // along with SDDM Sugar Candy. If not, see <https://www.gnu.org/licenses/>
 //
 
-import QtQuick 2.11
-import QtQuick.Layouts 1.11
-import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
-import QtMultimedia 5.11
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls
+import QtMultimedia
 
 import "Components"
 
@@ -34,7 +33,7 @@ Pane {
     id: root
 
     height: config.ScreenHeight || Screen.height
-    width: config.ScreenWidth || Screen.ScreenWidth
+    width: config.ScreenWidth || Screen.width
 
     LayoutMirroring.enabled: config.ForceRightToLeft == "true" ? true : Qt.application.layoutDirection === Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
@@ -215,84 +214,59 @@ Pane {
 
         MediaPlayer {
             id: videoPlayer
-            source: 'Assets/Copland_OS.mp4'
-
-            notifyInterval: videoPlayer.duration>2000 ? 1000 : 50
+            source: Qt.resolvedUrl("Assets/Copland_OS.mp4")
+            videoOutput: video
+            // No audioOutput on purpose: the clip's own (quiet) audio track
+            // stays muted so the louder bootSound below is the only audio.
             onPositionChanged: {
-                if(position > videoPlayer.duration-2*notifyInterval) {
-                    if(notifyInterval == 1000)
-                        notifyInterval = 50
-                    else if(notifyInterval == 50)
-                        videoPlayer.pause()
-                }
+                // Freeze on the last frame instead of looping or flashing black.
+                if (duration > 0 && position >= duration - 150)
+                    pause()
             }
-            onStatusChanged: {
-                if(status == MediaPlayer.Loaded)
-                    videoPlayer.play()
+            onMediaStatusChanged: {
+                if (mediaStatus == MediaPlayer.LoadedMedia)
+                    play()
             }
         }
-        
+
         VideoOutput {
             id: video
             anchors.fill: parent
-            source: videoPlayer
-            fillMode: VideoOutput.PreserveAspectCrop
+            // "Contain" the clip by default so the whole frame is visible on
+            // any resolution. Set ScaleImageCropped="true" to crop-to-fill.
+            fillMode: config.ScaleImageCropped == "true" ? VideoOutput.PreserveAspectCrop : VideoOutput.PreserveAspectFit
+        }
+
+        MediaPlayer {
+            id: bootSound
+            source: Qt.resolvedUrl("Assets/Copland_OS.mp3")
+            audioOutput: AudioOutput { id: bootAudio }
+            onMediaStatusChanged: {
+                if (mediaStatus == MediaPlayer.LoadedMedia)
+                    play()
+            }
         }
 
         ShaderEffect {
             id: crtEffect
             anchors.fill: parent
-            property variant source: ShaderEffectSource { sourceItem: video; hideSource: true }
+            property var source: ShaderEffectSource { sourceItem: video; hideSource: true }
 
             property real iTime: 0.0
+            property real iHeight: root.height
 
             NumberAnimation on iTime {
                 from: 0.0; to: 60.0; loops: Animation.Infinite; duration: 60000
             }
 
-            // default vertex shader code
-            vertexShader: "
-                uniform highp mat4 qt_Matrix;
-                attribute highp vec4 qt_Vertex;
-                attribute highp vec2 qt_MultiTexCoord0;
-                varying highp vec2 qt_TexCoord0;
-                void main() {
-                    qt_TexCoord0 = qt_MultiTexCoord0;
-                    gl_Position = qt_Matrix * qt_Vertex;
-                }"
-
-            fragmentShader: "
-                varying highp vec2 qt_TexCoord0;
-                uniform sampler2D source;
-                uniform lowp float iTime;
-                uniform lowp float qt_Opacity;
-                
-                float scanline(vec2 uv) {
-                    return sin(1920.0 * float(uv.y) * 0.7 - float(iTime) * 10.0);
-                }
-
-                float slowscan(vec2 uv) {
-                  return sin(1920.0 * float(uv.y) * 0.02 + float(iTime) * 6.0);
-                }
-
-                void main() {
-                    vec2 uv = qt_TexCoord0.xy;
-                    vec4 color;
-
-                    color.rgb = texture2D(source, uv).rgb;
-
-                    vec4 scanline_color = vec4(scanline(uv));
-	                  vec4 slowscan_color = vec4(slowscan(uv));
-
-                    gl_FragColor = mix(color, mix(scanline_color, slowscan_color, 0.25), 0.05);
-                }"
+            // Qt 6 RHI shader, baked from shaders/crt.frag with the qsb tool.
+            fragmentShader: Qt.resolvedUrl("shaders/crt.frag.qsb")
         }
 
-        
         MouseArea {
             anchors.fill: video
             onClicked: parent.forceActiveFocus()
         }
-        
+
     }
 }

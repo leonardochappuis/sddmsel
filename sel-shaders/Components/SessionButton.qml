@@ -22,9 +22,9 @@
 // along with SDDM Sugar Candy. If not, see <https://www.gnu.org/licenses/>
 //
 
-import QtQuick 2.11
-import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
+import QtQuick
+import QtQuick.Controls
+import Qt5Compat.GraphicalEffects
 
 Item {
     id: sessionButton
@@ -42,7 +42,7 @@ Item {
 
         hoverEnabled: true
         anchors.left: parent.left
-        Keys.onPressed: {
+        Keys.onPressed: (event) => {
             if (event.key == Qt.Key_Up && loginButton.state != "enabled" && !popup.opened)
                 revealSecret.focus = true,
                 revealSecret.state = "focused",

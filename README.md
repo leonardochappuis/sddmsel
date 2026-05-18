@@ -17,8 +17,17 @@ https://github.com/leonardochappuis/sddmsel/assets/40621126/6ec86e78-692d-4a24-b
 ### From sources
 > _Assumes that you've installed and configured SDDM correctly_ (if not [read more](https://wiki.archlinux.org/title/SDDM))
 
+> **This theme targets Qt 6** (SDDM 0.20 or newer, built against Qt 6). For the
+> older Qt 5 build of SDDM, check out a commit from before the Qt 6 migration.
+
 >  Please make sure you have the following dependencies installed:
->  `qt5-quickcontrols2`, `qt5-graphicaleffects`, `qt5-svg`, `qt5-multimedia`, `gst-libav`, `gst-plugins-good`, `gst-plugin-openh264`
+>  `qt6-declarative`, `qt6-5compat`, `qt6-svg`, `qt6-multimedia`
+>
+>  Video/audio playback also needs a Qt Multimedia backend:
+>  - `qt6-multimedia-ffmpeg` (recommended — decodes the H.264 clip on its own), **or**
+>  - `qt6-multimedia-gstreamer` together with `gst-libav`, `gst-plugins-good` and `gst-plugin-openh264`
+>
+>  Optional: `qt6-virtualkeyboard` for the on-screen keyboard.
 
 1. Open terminal, and clone the repository with:
 
@@ -29,11 +38,13 @@ https://github.com/leonardochappuis/sddmsel/assets/40621126/6ec86e78-692d-4a24-b
 2. Test versions:
 
    ```sh
-   sddm-greeter --test-mode --theme ~/sddm-sel/sel-shaders
+   sddm-greeter-qt6 --test-mode --theme ~/sddm-sel/sel-shaders
    ```
    ```sh
-   sddm-greeter --test-mode --theme ~/sddm-sel/sel-basic
+   sddm-greeter-qt6 --test-mode --theme ~/sddm-sel/sel-basic
    ```
+   > On a Qt 6 SDDM install the greeter binary is `sddm-greeter-qt6`.
+   > Press `F1`/`Esc` or just close the window to exit test mode.
 
 3. Them move the wanted version as follows:
 
