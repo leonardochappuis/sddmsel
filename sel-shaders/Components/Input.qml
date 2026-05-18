@@ -22,10 +22,10 @@
 // along with SDDM Sugar Candy. If not, see <https://www.gnu.org/licenses/>
 //
 
-import QtQuick 2.11
-import QtQuick.Layouts 1.11
-import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls
+import Qt5Compat.GraphicalEffects
 
 Column {
     id: inputContainer
@@ -50,7 +50,7 @@ Column {
             anchors.left: parent.left
 
             property var popkey: config.ForceRightToLeft == "true" ? Qt.Key_Right : Qt.Key_Left
-            Keys.onPressed: {
+            Keys.onPressed: (event) => {
                 if (event.key == Qt.Key_Down && !popup.opened)
                     username.forceActiveFocus();
                 if ((event.key == Qt.Key_Up || event.key == popkey) && !popup.opened)
@@ -64,6 +64,9 @@ Column {
             currentIndex: model.lastIndex
             textRole: "name"
             hoverEnabled: true
+            // The visible username is drawn by the TextField below; keep the
+            // ComboBox itself textless so only the user icon indicator shows.
+            contentItem: Item {}
             onActivated: {
                 username.text = currentText
             }
@@ -97,6 +100,9 @@ Column {
                     enabled: false
                     icon.color: root.palette.text
                     icon.source: Qt.resolvedUrl("../Assets/User.svgz")
+                    // Qt 6 buttons no longer inherit a transparent background
+                    // from the palette, so set it explicitly.
+                    background: Rectangle { color: "transparent" }
             }
 
             background: Rectangle {
@@ -560,8 +566,8 @@ Column {
 
     Connections {
         target: sddm
-        onLoginSucceeded: {}
-        onLoginFailed: {
+        function onLoginSucceeded() {}
+        function onLoginFailed() {
             failed = true
             resetError.running ? resetError.stop() && resetError.start() : resetError.start()
         }

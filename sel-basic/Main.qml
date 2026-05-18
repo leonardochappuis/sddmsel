@@ -22,11 +22,10 @@
 // along with SDDM Sugar Candy. If not, see <https://www.gnu.org/licenses/>
 //
 
-import QtQuick 2.11
-import QtQuick.Layouts 1.11
-import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
-import QtMultimedia 5.11
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls
+import QtMultimedia
 
 import "Components"
 
@@ -34,7 +33,7 @@ Pane {
     id: root
 
     height: config.ScreenHeight || Screen.height
-    width: config.ScreenWidth || Screen.ScreenWidth
+    width: config.ScreenWidth || Screen.width
 
     LayoutMirroring.enabled: config.ForceRightToLeft == "true" ? true : Qt.application.layoutDirection === Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
@@ -215,40 +214,43 @@ Pane {
 
         MediaPlayer {
             id: videoPlayer
-            source: 'Assets/Copland_OS.mp4'
-
-            notifyInterval: videoPlayer.duration>2000 ? 1000 : 50
+            source: Qt.resolvedUrl("Assets/Copland_OS.mp4")
+            videoOutput: video
+            // No audioOutput on purpose: the clip's own (quiet) audio track
+            // stays muted so the louder bootSound below is the only audio.
             onPositionChanged: {
-                if(position > videoPlayer.duration-2*notifyInterval) {
-                    if(notifyInterval == 1000)
-                        notifyInterval = 50
-                    else if(notifyInterval == 50)
-                        videoPlayer.pause()
-                }
+                // Freeze on the last frame instead of looping or flashing black.
+                if (duration > 0 && position >= duration - 150)
+                    pause()
             }
-            onStatusChanged: {
-                if(status == MediaPlayer.Loaded)
-                    videoPlayer.play()
+            onMediaStatusChanged: {
+                if (mediaStatus == MediaPlayer.LoadedMedia)
+                    play()
             }
         }
-        
+
         VideoOutput {
             id: video
             anchors.fill: parent
-            source: videoPlayer
-            fillMode: VideoOutput.PreserveAspectCrop
+            // "Contain" the clip by default so the whole frame is visible on
+            // any resolution. Set ScaleImageCropped="true" to crop-to-fill.
+            fillMode: config.ScaleImageCropped == "true" ? VideoOutput.PreserveAspectCrop : VideoOutput.PreserveAspectFit
         }
 
         MouseArea {
             anchors.fill: video
             onClicked: parent.forceActiveFocus()
         }
-        Audio {
-            id: welcome
-            source: "Assets/Copland_OS.mp3"
-            autoPlay: true
-    
+
+        MediaPlayer {
+            id: bootSound
+            source: Qt.resolvedUrl("Assets/Copland_OS.mp3")
+            audioOutput: AudioOutput { id: bootAudio }
+            onMediaStatusChanged: {
+                if (mediaStatus == MediaPlayer.LoadedMedia)
+                    play()
+            }
         }
-        
+
     }
 }
