@@ -31,7 +31,7 @@ Column {
     id: inputContainer
     Layout.fillWidth: true
 
-    property Control exposeSession: sessionSelect.exposeSession
+    property Item exposeSession: sessionSelect.exposeSession
     property bool failed
 
     Item {

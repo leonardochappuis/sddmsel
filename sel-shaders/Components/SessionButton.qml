@@ -35,7 +35,7 @@ Item {
     property var selectedSession: selectSession.currentIndex
     property string textConstantSession
     property int loginButtonWidth
-    property Control exposeSession: selectSession
+    property Item exposeSession: selectSession
 
     ComboBox {
         id: selectSession

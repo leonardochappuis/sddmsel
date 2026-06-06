@@ -46,7 +46,9 @@ Pane {
     palette.window: config.BackgroundColor
 
     font.family: config.Font
-    font.pointSize: config.FontSize !== "" ? config.FontSize : parseInt(height / 80)
+    font.pointSize: Number(config.FontSize) > 0
+                    ? Number(config.FontSize)
+                    : Math.max(1, Math.floor(height / 80))
     focus: true
 
     property bool leftleft: config.HaveFormBackground == "true" &&
@@ -129,7 +131,9 @@ Pane {
 
         Loader {
             id: virtualKeyboard
-            source: "Components/VirtualKeyboard.qml"
+            source: config.ForceHideVirtualKeyboardButton == "false"
+                    ? "Components/VirtualKeyboard.qml"
+                    : ""
             state: "hidden"
             property bool keyboardActive: item ? item.active : false
             onKeyboardActiveChanged: keyboardActive ? state = "visible" : state = "hidden"
