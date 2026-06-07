@@ -218,7 +218,7 @@ Pane {
             videoOutput: video
             // No audioOutput on purpose: the clip's own (quiet) audio track
             // stays muted so the louder bootSound below is the only audio.
-            onPositionChanged: {
+            onPositionChanged: function(position) {
                 // Freeze on the last frame instead of looping or flashing black.
                 if (duration > 0 && position >= duration - 150)
                     pause()
